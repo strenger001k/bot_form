@@ -3,4 +3,4 @@ def add(dict, messege_text):
 
 
 def replace(dict, messege_text, index):
-    dict[index] = (messege_text)
+    dict[index] = messege_text
