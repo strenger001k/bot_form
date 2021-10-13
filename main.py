@@ -4,13 +4,13 @@ from telebot import types
 from flask import Flask, request
 
 import database
-from __main__ import server
+from server import server
 from config import TOKEN, APP_URL
 from keyboard import age, male, gender, name, back, female, info, setting
 
 
 bot = telebot.TeleBot(TOKEN)
-#server = Flask(__name__)
+server = Flask(__name__)
 
 BD = {}
 
