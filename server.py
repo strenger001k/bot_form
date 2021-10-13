@@ -2,10 +2,11 @@ import os
 import telebot
 from flask import Flask, request
 
-from config import *
+from config import APP_URL, TOKEN
 from main import bot
 
 server = Flask(__name__)
+
 
 @server.route('/' + TOKEN, methods=['POST'])
 def get_message():

@@ -3,8 +3,8 @@ import telebot
 from telebot import types
 
 import database
-from config import *
-from keyboard import *
+from config import TOKEN
+from keyboard import name, age, gender, back, info, setting, male, female
 
 
 bot = telebot.TeleBot(TOKEN)
@@ -15,16 +15,16 @@ BD = {}
 @bot.message_handler(commands=['start'])
 def send_message(message):
     markup = types.ReplyKeyboardRemove(selective=False)
-    bot.send_message(message.from_user.id, f"Привіт{message.from_user.first_name}, я бот для анкетуваня!", reply_markup=markup)
-    chat_id = message.chat.id
-    BD[chat_id] = []
+    bot.send_message(message.from_user.id, f'Привіт{message.from_user.first_name}, я бот для анкетуваня!', reply_markup=markup)
+    BD[message.chat.id] = []
     msg = bot.send_message(message.from_user.id, "Ваше Ім'я")
     bot.register_next_step_handler(msg, process_name, 0)
 
 
 def process_name(message, a):
     markup = types.ReplyKeyboardMarkup(one_time_keyboard=True, resize_keyboard=True)
-    if(len(message.text) >= 2 and len(message.text) <= 20):
+    if len(message.text) >= 2 and\
+       len(message.text) <= 20:
         if not a:
             database.add(BD, message.chat.id, message.text)
         else:
@@ -50,13 +50,13 @@ def process_age(message, a):
         msg = bot.send_message(message.from_user.id, "Ваше Ім'я")
         bot.register_next_step_handler(msg, process_name, 1)
     else:
-        try:
-            int(message.text)
-            if (int(message.text) < 2 or int(message.text) > 102):
+        if message.text.isdigit():
+            if int(message.text) < 2 or\
+               int(message.text) > 102:
                 bot.reply_to(message, "Возраст от 2 до 102")
                 msg = bot.send_message(message.from_user.id, "Ваш вік")
                 if not a:
-                    bot.register_next_step_handler(msg, process_age, 0) 
+                    bot.register_next_step_handler(msg, process_age, 0)
                 else:
                     bot.register_next_step_handler(msg, process_age, 1)
             else:
@@ -65,16 +65,16 @@ def process_age(message, a):
                 else:
                     try:
                         database.replace(BD, message.chat.id, message.text, 1)
-                    except:
+                    except IndexError:
                         database.add(BD, message.chat.id, message.text)
                 markup.add(male, female, back)
                 msg = bot.send_message(message.from_user.id, "Стать", reply_markup=markup)
                 bot.register_next_step_handler(msg, process_gender)
-        except:
+        else:
             bot.reply_to(message, "Ви увели не цифру. Спробуйте ще раз...")
             msg = bot.send_message(message.from_user.id, "Ваш вік")
             if not a:
-                bot.register_next_step_handler(msg, process_age, 0) 
+                bot.register_next_step_handler(msg, process_age, 0)
             else:
                 bot.register_next_step_handler(msg, process_age, 1)
 
@@ -85,10 +85,10 @@ def process_gender(message):
         markup.add(back)
         msg = bot.send_message(message.from_user.id, "Ваш вік", reply_markup=markup)
         bot.register_next_step_handler(msg, process_age, 1)
-    elif (message.text == "Чоловік" or message.text == "Дівчина"):
+    elif message.text == "Чоловік" or\
+         message.text == "Дівчина":
         database.add(BD, message.chat.id, message.text)
         bot.send_message(message.chat.id, "Ви пройшли реєстрацію")
-
         markup.add(info, setting)
         msg = bot.send_message(message.from_user.id, "Головне меню", reply_markup=markup)
         bot.register_next_step_handler(msg, process_menu)
@@ -143,9 +143,9 @@ def process_change_age(message):
         msg = bot.send_message(message.from_user.id, "Оберіть пункт що хочете змінити", reply_markup=markup)
         bot.register_next_step_handler(msg, process_change)
     else:
-        try:
-            int(message.text)
-            if (int(message.text) < 2 or int(message.text) > 102):
+        if message.text.isdigit():
+            if int(message.text) < 2 or\
+               int(message.text) > 102:
                 bot.reply_to(message, "Возраст от 2 до 102")
                 msg = bot.send_message(message.from_user.id, "Ваш вік", reply_markup=markup)
                 bot.register_next_step_handler(msg, process_change_age)
@@ -154,7 +154,7 @@ def process_change_age(message):
                 markup.add(name, age, gender, back)
                 msg = bot.send_message(message.from_user.id, "Оберіть пункт що хочете змінити", reply_markup=markup)
                 bot.register_next_step_handler(msg, process_change)
-        except:
+        else:
             bot.reply_to(message, "Ви увели не цифру. Спробуйте ще раз...")
             msg = bot.send_message(message.from_user.id, "Ваш вік", reply_markup=markup)
             bot.register_next_step_handler(msg, process_change_age)
@@ -166,7 +166,8 @@ def process_change_gender(message):
         markup.add(name, age, gender, back)
         msg = bot.send_message(message.from_user.id, "Оберіть пункт що хочете змінити", reply_markup=markup)
         bot.register_next_step_handler(msg, process_change)
-    elif (message.text == "Чоловік" or message.text == "Дівчина"):
+    elif message.text == "Чоловік" or\
+         message.text == "Дівчина":
         database.replace(BD, message.chat.id, message.text, 2)
         markup.add(name, age, gender, back)
         msg = bot.send_message(message.from_user.id, "Оберіть пункт що хочете змінити", reply_markup=markup)
@@ -184,7 +185,8 @@ def process_change_name(message):
         msg = bot.send_message(message.from_user.id, "Оберіть пункт що хочете змінити", reply_markup=markup)
         bot.register_next_step_handler(msg, process_change)
     else:
-        if(len(message.text) >= 2 and len(message.text) <= 20):
+        if len(message.text) >= 2 and\
+           len(message.text) <= 20:
             database.replace(BD, message.chat.id, message.text, 0)
             markup.add(name, age, gender, back)
             msg = bot.send_message(message.from_user.id, "Оберіть пункт що хочете змінити", reply_markup=markup)
