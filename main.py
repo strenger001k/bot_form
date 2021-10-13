@@ -2,7 +2,7 @@ import os
 import telebot
 from telebot import types
 
-import database
+import database as db
 from config import TOKEN
 from keyboard import name, age, gender, back, info, setting, male, female
 
@@ -26,9 +26,9 @@ def process_name(message, a):
     if len(message.text) >= 2 and\
        len(message.text) <= 20:
         if not a:
-            database.add(BD, message.chat.id, message.text)
+            db.add(BD, message.chat.id, message.text)
         else:
-            database.replace(BD, message.chat.id, message.text, 0)
+            db.replace(BD, message.chat.id, message.text, 0)
         markup.add(back)
         msg = bot.send_message(message.from_user.id, "Ваш вік", reply_markup=markup)
         if not a:
@@ -61,12 +61,12 @@ def process_age(message, a):
                     bot.register_next_step_handler(msg, process_age, 1)
             else:
                 if not a:
-                    database.add(BD, message.chat.id, message.text)
+                    db.add(BD, message.chat.id, message.text)
                 else:
                     try:
-                        database.replace(BD, message.chat.id, message.text, 1)
+                        db.replace(BD, message.chat.id, message.text, 1)
                     except IndexError:
-                        database.add(BD, message.chat.id, message.text)
+                        db.add(BD, message.chat.id, message.text)
                 markup.add(male, female, back)
                 msg = bot.send_message(message.from_user.id, "Стать", reply_markup=markup)
                 bot.register_next_step_handler(msg, process_gender)
@@ -87,7 +87,7 @@ def process_gender(message):
         bot.register_next_step_handler(msg, process_age, 1)
     elif message.text == "Чоловік" or\
          message.text == "Дівчина":
-        database.add(BD, message.chat.id, message.text)
+        db.add(BD, message.chat.id, message.text)
         bot.send_message(message.chat.id, "Ви пройшли реєстрацію")
         markup.add(info, setting)
         msg = bot.send_message(message.from_user.id, "Головне меню", reply_markup=markup)
@@ -150,7 +150,7 @@ def process_change_age(message):
                 msg = bot.send_message(message.from_user.id, "Ваш вік", reply_markup=markup)
                 bot.register_next_step_handler(msg, process_change_age)
             else:
-                database.replace(BD, message.chat.id, message.text, 1)
+                db.replace(BD, message.chat.id, message.text, 1)
                 markup.add(name, age, gender, back)
                 msg = bot.send_message(message.from_user.id, "Оберіть пункт що хочете змінити", reply_markup=markup)
                 bot.register_next_step_handler(msg, process_change)
@@ -168,7 +168,7 @@ def process_change_gender(message):
         bot.register_next_step_handler(msg, process_change)
     elif message.text == "Чоловік" or\
          message.text == "Дівчина":
-        database.replace(BD, message.chat.id, message.text, 2)
+        db.replace(BD, message.chat.id, message.text, 2)
         markup.add(name, age, gender, back)
         msg = bot.send_message(message.from_user.id, "Оберіть пункт що хочете змінити", reply_markup=markup)
         bot.register_next_step_handler(msg, process_change)
@@ -187,7 +187,7 @@ def process_change_name(message):
     else:
         if len(message.text) >= 2 and\
            len(message.text) <= 20:
-            database.replace(BD, message.chat.id, message.text, 0)
+            db.replace(BD, message.chat.id, message.text, 0)
             markup.add(name, age, gender, back)
             msg = bot.send_message(message.from_user.id, "Оберіть пункт що хочете змінити", reply_markup=markup)
             bot.register_next_step_handler(msg, process_change)
