@@ -25,7 +25,7 @@ def process_name(message, a):
     if len(message.text) >= 2 and\
        len(message.text) <= 20:
         if not a:
-            db.add(BD, message.chat.id, message.text)
+            db.add(BD[message.chat.id], message.text)
         else:
             db.replace(BD, message.chat.id, message.text, 0)
         markup.add(back)
@@ -60,12 +60,12 @@ def process_age(message, a):
                     bot.register_next_step_handler(msg, process_age, 1)
             else:
                 if not a:
-                    db.add(BD, message.chat.id, message.text)
+                    db.add(BD[message.chat.id], message.text)
                 else:
                     try:
                         db.replace(BD, message.chat.id, message.text, 1)
                     except IndexError:
-                        db.add(BD, message.chat.id, message.text)
+                        db.add(BD[message.chat.id], message.text)
                 markup.add(male, female, back)
                 msg = bot.send_message(message.from_user.id, "Стать", reply_markup=markup)
                 bot.register_next_step_handler(msg, process_gender)
@@ -86,7 +86,7 @@ def process_gender(message):
         bot.register_next_step_handler(msg, process_age, 1)
     elif message.text == "Чоловік" or\
          message.text == "Дівчина":
-        db.add(BD, message.chat.id, message.text)
+        db.add(BD[message.chat.id], message.text)
         bot.send_message(message.chat.id, "Ви пройшли реєстрацію")
         markup.add(info, setting)
         msg = bot.send_message(message.from_user.id, "Головне меню", reply_markup=markup)
