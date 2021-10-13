@@ -4,7 +4,6 @@ from telebot import types
 from flask import Flask, request
 
 import database
-from server import server
 from config import TOKEN, APP_URL
 from keyboard import age, male, gender, name, back, female, info, setting
 
@@ -197,7 +196,7 @@ def process_change_name(message):
             bot.register_next_step_handler(msg, process_change_name)
 
 
-"""@server.route('/' + TOKEN, methods=['POST'])
+@server.route('/' + TOKEN, methods=['POST'])
 def get_message():
     json_string = request.get_data().decode('utf-8')
     update = telebot.types.Update.de_json(json_string)
@@ -209,7 +208,7 @@ def get_message():
 def webhook():
     bot.remove_webhook()
     bot.set_webhook(url=APP_URL)
-    return '!', 200"""
+    return '!', 200
 
 
 if __name__ == '__main__':
