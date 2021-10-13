@@ -1,5 +1,5 @@
-def add(dict, chat_id, messege_text):
-    dict[chat_id].append(messege_text)
+def add(dict, messege_text):
+    dict.append(messege_text)
 
 
 def replace(dict, chat_id, messege_text, index):
