@@ -18,7 +18,7 @@ info = types.KeyboardButton('Інфа про мене')
 setting = types.KeyboardButton('Настройки')
 male = types.KeyboardButton('Чоловік')
 female = types.KeyboardButton('Дівчина')
-markup = types.ReplyKeyboardMarkup(one_time_keyboard=True, resize_keyboard=True)
+
 
 @bot.message_handler(commands=['start'])
 def send_message(message):
@@ -31,6 +31,7 @@ def send_message(message):
 
 
 def process_name(message, a):
+    markup = types.ReplyKeyboardMarkup(one_time_keyboard=True, resize_keyboard=True)
     if(len(message.text) >= 2 and len(message.text)<=20):
         if not a:
             database.add(BD, message.chat.id, message.text)
@@ -51,6 +52,7 @@ def process_name(message, a):
             bot.register_next_step_handler(msg, process_name, 1)
 
 def process_age(message, a):
+    markup = types.ReplyKeyboardMarkup(one_time_keyboard=True, resize_keyboard=True)
     if message.text == "Назад":
         msg = bot.send_message(message.from_user.id, "Ваше Ім'я")
         bot.register_next_step_handler(msg, process_name, 1)
@@ -84,6 +86,7 @@ def process_age(message, a):
                 bot.register_next_step_handler(msg, process_age, 1)
 
 def process_gender(message):
+    markup = types.ReplyKeyboardMarkup(one_time_keyboard=True, resize_keyboard=True)
     if message.text == "Назад":
         markup.add(back)
         msg = bot.send_message(message.from_user.id, "Ваш вік", reply_markup=markup)
@@ -101,6 +104,7 @@ def process_gender(message):
 
     
 def process_menu(message):
+    markup = types.ReplyKeyboardMarkup(one_time_keyboard=True, resize_keyboard=True)
     if message.text == "Інфа про мене":
         markup.add(back)
         msg = bot.send_message(message.from_user.id, f'*Імʼя*: {BD[message.chat.id][0]}\n*Вік*: {BD[message.chat.id][1]}\n*Стать*: {BD[message.chat.id][2]}', parse_mode="MarkdownV2", reply_markup=markup)
@@ -115,6 +119,7 @@ def process_menu(message):
         bot.register_next_step_handler(msg, process_menu)
         
 def process_change(message):
+    markup = types.ReplyKeyboardMarkup(one_time_keyboard=True, resize_keyboard=True)
     if message.text == 'Змінити вік':
         markup.add(back)
         msg = bot.send_message(message.from_user.id, "Ваш вік", reply_markup=markup)
@@ -135,6 +140,7 @@ def process_change(message):
         bot.register_next_step_handler(msg, process_menu)
 
 def process_change_age(message):
+    markup = types.ReplyKeyboardMarkup(one_time_keyboard=True, resize_keyboard=True)
     if message.text == 'Назад':
         markup.add(name, age, gender, back)
         msg = bot.send_message(message.from_user.id, "Оберіть пункт що хочете змінити", reply_markup=markup)
@@ -157,6 +163,7 @@ def process_change_age(message):
             bot.register_next_step_handler(msg, process_change_age)
 
 def process_change_gender(message):
+    markup = types.ReplyKeyboardMarkup(one_time_keyboard=True, resize_keyboard=True)
     if message.text == 'Назад':
         markup.add(name, age, gender, back)
         msg = bot.send_message(message.from_user.id, "Оберіть пункт що хочете змінити", reply_markup=markup)
@@ -172,6 +179,7 @@ def process_change_gender(message):
         bot.register_next_step_handler(msg, process_change_gender)
 
 def process_change_name(message):
+    markup = types.ReplyKeyboardMarkup(one_time_keyboard=True, resize_keyboard=True)
     if message.text == 'Назад':
         markup.add(name, age, gender, back)
         msg = bot.send_message(message.from_user.id, "Оберіть пункт що хочете змінити", reply_markup=markup)
