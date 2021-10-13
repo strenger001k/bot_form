@@ -1,11 +1,10 @@
 import os
 import telebot
 from telebot import types
-from flask import Flask, request
 
 import database
-from config import TOKEN, APP_URL
-from keyboard import age, male, gender, name, back, female, info, setting
+from config import *
+from keyboard import *
 
 
 bot = telebot.TeleBot(TOKEN)
