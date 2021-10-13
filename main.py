@@ -31,10 +31,8 @@ def process_name(message, a):
             database.add(BD, message.chat.id, message.text)
         else:
             database.replace(BD, message.chat.id, message.text, 0)
-
         markup.add(back)
         msg = bot.send_message(message.from_user.id, "Ваш вік", reply_markup=markup)
-
         if not a:
             bot.register_next_step_handler(msg, process_age, 0)
         else:
@@ -42,7 +40,6 @@ def process_name(message, a):
     else:
         bot.reply_to(message, "Імʼя від 2 до 20 символів")
         msg = bot.send_message(message.from_user.id, "Ваше Ім'я")
-
         if not a:
             bot.register_next_step_handler(msg, process_name, 0)
         else:
@@ -72,14 +69,12 @@ def process_age(message, a):
                         database.replace(BD, message.chat.id, message.text, 1)
                     except:
                         database.add(BD, message.chat.id, message.text)
-
                 markup.add(male, female, back)
                 msg = bot.send_message(message.from_user.id, "Стать", reply_markup=markup)
                 bot.register_next_step_handler(msg, process_gender)
         except:
             bot.reply_to(message, "Ви увели не цифру. Спробуйте ще раз...")
             msg = bot.send_message(message.from_user.id, "Ваш вік")
-
             if not a:
                 bot.register_next_step_handler(msg, process_age, 0) 
             else:
@@ -104,7 +99,7 @@ def process_gender(message):
         msg = bot.send_message(message.from_user.id, "Оберіть правильну стать", reply_markup=markup)
         bot.register_next_step_handler(msg, process_gender)
 
-    
+
 def process_menu(message):
     markup = types.ReplyKeyboardMarkup(one_time_keyboard=True, resize_keyboard=True)
     if message.text == "Інфа про мене":
@@ -119,7 +114,7 @@ def process_menu(message):
         markup.add(info, setting)
         msg = bot.send_message(message.from_user.id, "Головне меню", reply_markup=markup)
         bot.register_next_step_handler(msg, process_menu)
-        
+
 
 def process_change(message):
     markup = types.ReplyKeyboardMarkup(one_time_keyboard=True, resize_keyboard=True)
