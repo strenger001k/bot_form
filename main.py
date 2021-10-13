@@ -27,7 +27,7 @@ def process_name(message, a):
         if not a:
             db.add(BD[message.chat.id], message.text)
         else:
-            db.replace(BD, message.chat.id, message.text, 0)
+            db.replace(BD[message.chat.id][0], message.text)
         markup.add(back)
         msg = bot.send_message(message.from_user.id, "Ваш вік", reply_markup=markup)
         if not a:
@@ -63,7 +63,7 @@ def process_age(message, a):
                     db.add(BD[message.chat.id], message.text)
                 else:
                     try:
-                        db.replace(BD, message.chat.id, message.text, 1)
+                        db.replace(BD[message.chat.id][1], message.text)
                     except IndexError:
                         db.add(BD[message.chat.id], message.text)
                 markup.add(male, female, back)
@@ -149,7 +149,7 @@ def process_change_age(message):
                 msg = bot.send_message(message.from_user.id, "Ваш вік", reply_markup=markup)
                 bot.register_next_step_handler(msg, process_change_age)
             else:
-                db.replace(BD, message.chat.id, message.text, 1)
+                db.replace(BD[message.chat.id][1], message.text)
                 markup.add(name, age, gender, back)
                 msg = bot.send_message(message.from_user.id, "Оберіть пункт що хочете змінити", reply_markup=markup)
                 bot.register_next_step_handler(msg, process_change)
@@ -167,7 +167,7 @@ def process_change_gender(message):
         bot.register_next_step_handler(msg, process_change)
     elif message.text == "Чоловік" or\
          message.text == "Дівчина":
-        db.replace(BD, message.chat.id, message.text, 2)
+        db.replace(BD[message.chat.id][2], message.text)
         markup.add(name, age, gender, back)
         msg = bot.send_message(message.from_user.id, "Оберіть пункт що хочете змінити", reply_markup=markup)
         bot.register_next_step_handler(msg, process_change)
@@ -186,7 +186,7 @@ def process_change_name(message):
     else:
         if len(message.text) >= 2 and\
            len(message.text) <= 20:
-            db.replace(BD, message.chat.id, message.text, 0)
+            db.replace(BD[message.chat.id][0], message.text)
             markup.add(name, age, gender, back)
             msg = bot.send_message(message.from_user.id, "Оберіть пункт що хочете змінити", reply_markup=markup)
             bot.register_next_step_handler(msg, process_change)
