@@ -179,8 +179,7 @@ def process_change_gender(message):
         bot.register_next_step_handler(msg, process_change)
     elif message.text == "Чоловік" or message.text == "Дівчина":
         try:
-            chat_id = message.chat.id
-            BD[chat_id][2] = message.text
+            database.replace(BD, message.chat.id, message.text, 2)
             markup.add(name, age, gender, back)
             msg = bot.send_message(message.from_user.id, "Оберіть пункт що хочете змінити", reply_markup=markup)
             bot.register_next_step_handler(msg, process_change)
@@ -200,8 +199,7 @@ def process_change_name(message):
     else:
         try:
             if(len(message.text) >= 2 and len(message.text)<=20):
-                chat_id = message.chat.id
-                BD[chat_id][0] = message.text
+                database.replace(BD, message.chat.id, message.text, 0)
                 markup.add(name, age, gender, back)
                 msg = bot.send_message(message.from_user.id, "Оберіть пункт що хочете змінити", reply_markup=markup)
                 bot.register_next_step_handler(msg, process_change)
