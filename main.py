@@ -52,7 +52,6 @@ def process_name(message, a):
                 bot.register_next_step_handler(msg, process_name, 1)
     except:
         bot.reply_to(message, "Помилка(")
-    print(BD)
 
 def process_age(message, a):
     if message.text == "Назад":
@@ -67,15 +66,12 @@ def process_age(message, a):
                 bot.register_next_step_handler(msg, process_age, 0)
             else:
                 if not a:
-                    chat_id = message.chat.id
-                    BD[chat_id].append(message.text)
+                    database.add(BD, message.chat.id, message.text)
                 else:
                     try:
-                        chat_id = message.chat.id
-                        BD[chat_id][1] = (message.text)
+                        database.replace(BD, message.chat.id, message.text, 1)
                     except:
-                        chat_id = message.chat.id
-                        BD[chat_id].append(message.text)
+                        database.add(BD, message.chat.id, message.text)
                 markup = types.ReplyKeyboardMarkup(one_time_keyboard = True, resize_keyboard = True)
                 markup.add(male, female, back)
                 msg = bot.send_message(message.from_user.id, "Стать", reply_markup=markup)
@@ -89,26 +85,22 @@ def process_age(message, a):
                 bot.register_next_step_handler(msg, process_age, 1)
 
 def process_gender(message):
+    markup = types.ReplyKeyboardMarkup(one_time_keyboard = True, resize_keyboard = True)
     if message.text == "Назад":
-        markup = types.ReplyKeyboardMarkup(one_time_keyboard = True, resize_keyboard = True)
         markup.add(back)
         msg = bot.send_message(message.from_user.id, "Ваш вік", reply_markup=markup)
         bot.register_next_step_handler(msg, process_age, 1)
     elif message.text == "Чоловік" or message.text == "Дівчина":
         try:
-            chat_id = message.chat.id
-            BD[chat_id].append(message.text)
-            markup =  types.ReplyKeyboardRemove(selective=False)
-            bot.send_message(message.chat.id, "Ви пройшли реєстрацію", reply_markup=markup)
+            database.add(BD, message.chat.id, message.text)
+            bot.send_message(message.chat.id, "Ви пройшли реєстрацію")
             print(BD)
-            markup = types.ReplyKeyboardMarkup(one_time_keyboard = True, resize_keyboard = True)
             markup.add(info, setting)
             msg = bot.send_message(message.from_user.id, "Головне меню", reply_markup=markup)
             bot.register_next_step_handler(msg, process_menu)
         except:
             bot.reply_to(message, "Помилка(")
     else:
-        markup = types.ReplyKeyboardMarkup(one_time_keyboard = True, resize_keyboard = True)
         markup.add(male, female, back)
         msg = bot.send_message(message.from_user.id, "Оберіть правильну стать", reply_markup=markup)
         bot.register_next_step_handler(msg, process_gender)
