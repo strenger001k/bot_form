@@ -1,5 +1,6 @@
 import os
 import telebot
+import database
 from telebot import types
 from flask import Flask, request
 
@@ -32,8 +33,9 @@ def process_name(message, a):
     try:
         if(len(message.text) >= 2 and len(message.text)<=20):
             if not a:
-                chat_id = message.chat.id
-                BD[chat_id].append(message.text)
+                database.add(BD, message.chat.id, message.text)
+                #chat_id = message.chat.id
+                #BD[chat_id].append(message.text)
             else:
                 chat_id = message.chat.id
                 BD[chat_id][0] = (message.text)
