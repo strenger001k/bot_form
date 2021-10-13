@@ -31,7 +31,7 @@ def send_message(message):
 def process_name(message, a):
     try:
         if(len(message.text) >= 2 and len(message.text)<=20):
-            if a == 0:
+            if not a:
                 chat_id = message.chat.id
                 BD[chat_id].append(message.text)
             else:
@@ -47,7 +47,7 @@ def process_name(message, a):
         else:
             bot.reply_to(message, "Імʼя від 2 до 20 символів")
             msg = bot.send_message(message.from_user.id, "Ваше Ім'я")
-            if a==0:
+            if not a:
                 bot.register_next_step_handler(msg, process_name, 0)
             else:
                 bot.register_next_step_handler(msg, process_name, 1)
