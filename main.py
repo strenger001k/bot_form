@@ -97,7 +97,6 @@ def process_gender(message):
         try:
             database.add(BD, message.chat.id, message.text)
             bot.send_message(message.chat.id, "Ви пройшли реєстрацію")
-            print(BD)
             markup.add(info, setting)
             msg = bot.send_message(message.from_user.id, "Головне меню", reply_markup=markup)
             bot.register_next_step_handler(msg, process_menu)
@@ -163,9 +162,7 @@ def process_change_age(message):
                 msg = bot.send_message(message.from_user.id, "Ваш вік", reply_markup=markup)
                 bot.register_next_step_handler(msg, process_change_age)
             else:
-                chat_id = message.chat.id
-                BD[chat_id][1] = message.text
-                print(BD[chat_id])
+                database.replace(BD, message.chat.id, message.text, 1)
                 markup.add(name, age, gender, back)
                 msg = bot.send_message(message.from_user.id, "Оберіть пункт що хочете змінити", reply_markup=markup)
                 bot.register_next_step_handler(msg, process_change)
