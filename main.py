@@ -1,29 +1,21 @@
 import os
 import telebot
-import database
-from config import TOKEN, APP_URL
 from telebot import types
 from flask import Flask, request
+
+import database
+from config import TOKEN, APP_URL
+from keyboard import age, male, gender, name, back, female, info, setting
 
 bot = telebot.TeleBot(TOKEN)
 server = Flask(__name__)
 
 BD = {}
 
-age = types.KeyboardButton('Змінити вік')
-gender = types.KeyboardButton('Змінити стать')
-name = types.KeyboardButton('Змінити Імʼя')
-back = types.KeyboardButton('Назад')
-info = types.KeyboardButton('Інфа про мене')
-setting = types.KeyboardButton('Настройки')
-male = types.KeyboardButton('Чоловік')
-female = types.KeyboardButton('Дівчина')
-
-
 @bot.message_handler(commands=['start'])
 def send_message(message):
-    markup =  types.ReplyKeyboardRemove(selective=False)
-    bot.send_message(message.from_user.id, f"Привіт {message.from_user.first_name}, я бот для анкетуваня! ", reply_markup=markup)
+    markup = types.ReplyKeyboardRemove(selective=False)
+    bot.send_message(message.from_user.id, f"Привіт{message.from_user.first_name}, я бот для анкетуваня!", reply_markup=markup)
     chat_id = message.chat.id
     BD[chat_id] = []
     msg = bot.send_message(message.from_user.id, "Ваше Ім'я")
@@ -51,6 +43,7 @@ def process_name(message, a):
         else:
             bot.register_next_step_handler(msg, process_name, 1)
 
+
 def process_age(message, a):
     markup = types.ReplyKeyboardMarkup(one_time_keyboard=True, resize_keyboard=True)
     if message.text == "Назад":
@@ -59,7 +52,7 @@ def process_age(message, a):
     else:
         try:
             int(message.text)
-            if (int(message.text)<2 or int(message.text)>102):
+            if (int(message.text) < 2 or int(message.text) > 102):
                 bot.reply_to(message, "Возраст от 2 до 102")
                 msg = bot.send_message(message.from_user.id, "Ваш вік")
                 if not a:
@@ -84,6 +77,7 @@ def process_age(message, a):
                 bot.register_next_step_handler(msg, process_age, 0) 
             else:
                 bot.register_next_step_handler(msg, process_age, 1)
+
 
 def process_gender(message):
     markup = types.ReplyKeyboardMarkup(one_time_keyboard=True, resize_keyboard=True)
@@ -118,6 +112,7 @@ def process_menu(message):
         msg = bot.send_message(message.from_user.id, "Головне меню", reply_markup=markup)
         bot.register_next_step_handler(msg, process_menu)
         
+
 def process_change(message):
     markup = types.ReplyKeyboardMarkup(one_time_keyboard=True, resize_keyboard=True)
     if message.text == 'Змінити вік':
@@ -139,6 +134,7 @@ def process_change(message):
         msg = bot.send_message(message.from_user.id, "Головне меню", reply_markup=markup)
         bot.register_next_step_handler(msg, process_menu)
 
+
 def process_change_age(message):
     markup = types.ReplyKeyboardMarkup(one_time_keyboard=True, resize_keyboard=True)
     if message.text == 'Назад':
@@ -148,7 +144,7 @@ def process_change_age(message):
     else:
         try:
             int(message.text)
-            if (int(message.text)<2 or int(message.text)>102):
+            if (int(message.text) < 2 or int(message.text) > 102):
                 bot.reply_to(message, "Возраст от 2 до 102")
                 msg = bot.send_message(message.from_user.id, "Ваш вік", reply_markup=markup)
                 bot.register_next_step_handler(msg, process_change_age)
@@ -161,6 +157,7 @@ def process_change_age(message):
             bot.reply_to(message, "Ви увели не цифру. Спробуйте ще раз...")
             msg = bot.send_message(message.from_user.id, "Ваш вік", reply_markup=markup)
             bot.register_next_step_handler(msg, process_change_age)
+
 
 def process_change_gender(message):
     markup = types.ReplyKeyboardMarkup(one_time_keyboard=True, resize_keyboard=True)
@@ -178,6 +175,7 @@ def process_change_gender(message):
         msg = bot.send_message(message.from_user.id, "Оберіть правильну стать", reply_markup=markup)
         bot.register_next_step_handler(msg, process_change_gender)
 
+
 def process_change_name(message):
     markup = types.ReplyKeyboardMarkup(one_time_keyboard=True, resize_keyboard=True)
     if message.text == 'Назад':
@@ -185,7 +183,7 @@ def process_change_name(message):
         msg = bot.send_message(message.from_user.id, "Оберіть пункт що хочете змінити", reply_markup=markup)
         bot.register_next_step_handler(msg, process_change)
     else:
-        if(len(message.text) >= 2 and len(message.text)<=20):
+        if(len(message.text) >= 2 and len(message.text) <= 20):
             database.replace(BD, message.chat.id, message.text, 0)
             markup.add(name, age, gender, back)
             msg = bot.send_message(message.from_user.id, "Оберіть пункт що хочете змінити", reply_markup=markup)
@@ -195,6 +193,7 @@ def process_change_name(message):
             msg = bot.send_message(message.from_user.id, "Ваше Ім'я")
             bot.register_next_step_handler(msg, process_change_name)
 
+
 @server.route('/' + TOKEN, methods=['POST'])
 def get_message():
     json_string = request.get_data().decode('utf-8')
@@ -202,11 +201,13 @@ def get_message():
     bot.process_new_updates([update])
     return '!', 200
 
+
 @server.route('/')
 def webhook():
     bot.remove_webhook()
     bot.set_webhook(url=APP_URL)
     return '!', 200
+
 
 if __name__ == '__main__':
     server.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)))
