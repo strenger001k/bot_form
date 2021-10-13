@@ -67,7 +67,7 @@ def process_age(message, a):
                 msg = bot.send_message(message.from_user.id, "Ваш вік")
                 bot.register_next_step_handler(msg, process_age, 0)
             else:
-                if a == 0:
+                if not a:
                     chat_id = message.chat.id
                     BD[chat_id].append(message.text)
                 else:
@@ -84,7 +84,7 @@ def process_age(message, a):
         except:
             bot.reply_to(message, "Ви увели не цифру. Спробуйте ще раз...")
             msg = bot.send_message(message.from_user.id, "Ваш вік")
-            if a==0:
+            if not a:
                 bot.register_next_step_handler(msg, process_age, 0) 
             else:
                 bot.register_next_step_handler(msg, process_age, 1)
