@@ -34,11 +34,8 @@ def process_name(message, a):
         if(len(message.text) >= 2 and len(message.text)<=20):
             if not a:
                 database.add(BD, message.chat.id, message.text)
-                #chat_id = message.chat.id
-                #BD[chat_id].append(message.text)
             else:
-                chat_id = message.chat.id
-                BD[chat_id][0] = (message.text)
+                database.replace(BD, message.chat.id, message.text, 0)
             markup = types.ReplyKeyboardMarkup(one_time_keyboard = True, resize_keyboard = True)
             markup.add(back)
             msg = bot.send_message(message.from_user.id, "Ваш вік", reply_markup=markup)
