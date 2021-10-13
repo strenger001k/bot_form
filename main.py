@@ -66,12 +66,15 @@ def process_age(message, a):
                 bot.register_next_step_handler(msg, process_age, 0)
             else:
                 if not a:
-                    database.add(BD, message.chat.id, message.text)
+                    chat_id = message.chat.id
+                    BD[chat_id].append(message.text)
                 else:
                     try:
-                        database.replace(BD, message.chat.id, message.text, 1)
+                        chat_id = message.chat.id
+                        BD[chat_id][1] = (message.text)
                     except:
-                        database.add(BD, message.chat.id, message.text)
+                        chat_id = message.chat.id
+                        BD[chat_id].append(message.text)
                 markup = types.ReplyKeyboardMarkup(one_time_keyboard = True, resize_keyboard = True)
                 markup.add(male, female, back)
                 msg = bot.send_message(message.from_user.id, "Стать", reply_markup=markup)
@@ -92,7 +95,8 @@ def process_gender(message):
         bot.register_next_step_handler(msg, process_age, 1)
     elif message.text == "Чоловік" or message.text == "Дівчина":
         try:
-            database.add(BD, message.chat.id, message.text)
+            chat_id = message.chat.id
+            BD[chat_id].append(message.text)
             bot.send_message(message.chat.id, "Ви пройшли реєстрацію")
             print(BD)
             markup.add(info, setting)
