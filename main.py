@@ -4,13 +4,16 @@ from telebot import types
 from flask import Flask, request
 
 import database
+from __main__ import server
 from config import TOKEN, APP_URL
 from keyboard import age, male, gender, name, back, female, info, setting
 
+
 bot = telebot.TeleBot(TOKEN)
-server = Flask(__name__)
+#server = Flask(__name__)
 
 BD = {}
+
 
 @bot.message_handler(commands=['start'])
 def send_message(message):
@@ -24,14 +27,14 @@ def send_message(message):
 
 def process_name(message, a):
     markup = types.ReplyKeyboardMarkup(one_time_keyboard=True, resize_keyboard=True)
-    if(len(message.text) >= 2 and len(message.text)<=20):
+    if(len(message.text) >= 2 and len(message.text) <= 20):
         if not a:
             database.add(BD, message.chat.id, message.text)
         else:
             database.replace(BD, message.chat.id, message.text, 0)
         markup.add(back)
         msg = bot.send_message(message.from_user.id, "Ваш вік", reply_markup=markup)
-        if a==0:
+        if not a:
             bot.register_next_step_handler(msg, process_age, 0)
         else:
             bot.register_next_step_handler(msg, process_age, 1)
@@ -209,5 +212,5 @@ def webhook():
     return '!', 200
 
 
-if __name__ == '__main__':
-    server.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)))
+#if __name__ == '__main__':
+    #server.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)))
