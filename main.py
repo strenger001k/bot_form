@@ -63,7 +63,10 @@ def process_age(message, a):
             if (int(message.text)<2 or int(message.text)>102):
                 bot.reply_to(message, "Возраст от 2 до 102")
                 msg = bot.send_message(message.from_user.id, "Ваш вік")
-                bot.register_next_step_handler(msg, process_age, 0)
+                if not a:
+                    bot.register_next_step_handler(msg, process_age, 0) 
+                else:
+                    bot.register_next_step_handler(msg, process_age, 1)
             else:
                 if not a:
                     chat_id = message.chat.id
